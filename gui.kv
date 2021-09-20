@@ -1,0 +1,734 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+<ItemDrawer>:
+    theme_text_color: "Custom"
+    on_release: self.parent.set_color_item(self)
+
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
+
+
+
+
+ScreenManager:
+    id: screen_manager_main
+    Screen:
+        name: 'logout'
+        size: (400, 600)
+        MDSwiper:
+            on_swipe_left:
+                app.stop_vid()
+            on_swipe_right:
+                app.start_vid()
+            MDSwiperItem:
+                MDBoxLayout:
+                    size_hint: None, None
+                    size: 260,260*5/4
+                    pos_hint: {'center_x': 0.6 , 'center_y': 0.65}
+                    MDCard:
+                        elevation: 10
+                        padding: 25
+                        spacing: 25
+                        orientation: 'vertical'
+                        MDLabel:
+                            id: welcome_label
+                            text: 'Welcome!'
+                            font_size: 30
+                            halign: 'center'
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            padding_y: 15
+                        MDTextField:
+                            id: user
+                            hint_text: 'username'
+                            icon_right: 'account'
+                            required: True
+                            helper_text_mode: 'on_error'
+                            helper_text:'invaid username :('
+                            size_hint_x: None
+                            width: 200
+                            font_size: 18
+                            pos_hint: {'center_x': 0.5}
+                        MDTextField:
+                            id: password
+                            hint_text: 'password'
+                            icon_right: 'eye-off'
+                            size_hint_x: None
+                            required: True
+                            helper_text_mode: 'on_error'
+                            helper_text:'invaid password :('
+                            width: 200
+                            font_size: 18
+                            pos_hint: {'center_x': 0.5}
+                            password: True
+                        MDBoxLayout:
+                            spacing: 10
+                            MDRoundFlatButton:
+                                text: 'Login'
+                                font_size: 12
+                                pos_hint: {'center_x': 0.5}
+                                on_press: app.logger()
+                                upper_padding: 40
+
+            MDSwiperItem:
+                MDBoxLayout:
+                    size_hint: None, None
+                    size: 260,260*5/4
+                    pos_hint: {'center_x': 0.6 , 'center_y': 0.65}
+                    MDCard:
+                        #elevation: 10
+                        #padding: 25
+                        #spacing: 25
+                        #orientation: 'vertical'
+                        Image:
+                            # this is where the video will show
+                            # the id allows easy access
+                            id: vid
+                            #size_hint: 0.8, 0.9
+                            allow_stretch: True  # allow the video image to be scaled
+                            keep_ratio: False  # keep the aspect ratio so people don't look squashed
+                            #pos_hint: {'center_x':0.5, 'top':0.9}
+
+
+
+        #This should be deleted at the end
+        MDRoundFlatButton:
+            text: 'Skip'
+            on_press:   app.root.current = 'Home'
+    Screen:
+        name: 'Home'
+#        MDRoundFlatButton:
+#            text: 'Face'
+#            on_release: app.root.current = 'logout'
+        MDNavigationLayout:
+            ScreenManager:
+                id: ScreenManagerNav
+                Screen:
+                    name: 'Home_second'
+                    #BoxLayout:
+                    BoxLayout:
+                        orientation: 'vertical'
+                        MDToolbar:
+                            title: "Navigation Drawer"
+                            elevation: 10
+                            left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
+
+                        #Widget:
+                        AnchorLayout:
+                            id: data_table
+
+
+                Screen:
+                    name: "add_user"
+                    ScreenManager:
+                        id: add_user_screen_manager
+                        Screen:
+                            name: 'ausm1'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Let\'s add a user'
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.add_user_screen_manager.current = 'ausm2'
+                        Screen:
+                            name: 'ausm2'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask your name?'
+
+                                MDTextField:
+                                    id: name_of_user
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: 1,1,1,1
+                                    on_error: app.root.ids.name_of_user.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: 1,1,1,1
+                                    line_color_focus: 1,1,1,1
+
+                                    size_hint_x: 0.5
+                                    mode: "rectangle"
+                                    hint_text: 'name'
+                                    required: True
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1 #self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: if not app.root.ids.name_of_user.error:  app.root.ids.add_user_screen_manager.current = 'ausm3'
+                        Screen:
+                            name: 'ausm3'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask your password?'
+                                MDTextField:
+                                    id: password_of_user
+                                    hint_text: 'password'
+                                    size_hint_x: 0.5
+                                    password: True
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    mode: "rectangle"
+                                    required: True
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: self.theme_cls.primary_color
+                                    on_error: app.root.ids.name_of_user.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: self.theme_cls.primary_color
+                                    line_color_focus: self.theme_cls.primary_color
+
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'arrow-right'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: if not app.root.ids.password_of_user.error: app.root.ids.add_user_screen_manager.current = 'ausm4'
+                        Screen:
+                            name: 'ausm4'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask your email address?'
+
+                                MDTextField:
+                                    id: email_of_user
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: 1,1,1,1
+                                    on_error: app.root.ids.email_of_user.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: 1,1,1,1
+                                    line_color_focus: 1,1,1,1
+                                    helper_text: "email is invalid!"
+                                    on_text_validate: app.check_email(app.root.ids.email_of_user.text);
+                                    helper_text_mode: "on_error"
+                                    size_hint_x: 0.5
+                                    mode: "rectangle"
+                                    hint_text: 'email'
+                                    required: True
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1 #self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: if not app.root.ids.email_of_user.error: app.root.ids.add_user_screen_manager.current = 'ausm5'
+                        Screen:
+                            name: 'ausm5'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 25
+                                    pos_hint: {'center_x':0.46,'center_y':0.69}
+                                    text: 'Please \nupload your face data.'
+                                MDFillRoundFlatIconButton:
+                                    text: "Open manager"
+                                    icon: "folder"
+                                    md_bg_color: 1,1,1,1
+                                    icon_color: app.theme_cls.primary_color
+                                    theme_text_color: "Custom"
+                                    text_color: app.theme_cls.primary_color
+                                    pos_hint: {'center_x': .61, 'center_y': .46}
+                                    on_release: app.file_manager_open()
+                                MDIconButton:
+                                    id: info_for_upload
+                                    md_bg_color: self.theme_cls.primary_color
+                                    icon: 'information-variant'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1
+                                    pos_hint: {'center_x':0.93,'center_y':0.95}
+                                    on_release: app.tap_target_start()
+                                MDIconButton:
+                                    color: 1,1,1,1
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.result_of_add_user()
+
+                        Screen:
+                            name: 'ausm6'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.87,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    icon: 'emoticon-excited-outline'
+                                MDLabel:
+                                    size_hint: (0.4,0.4)
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                    text: 'User added successfully'
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: self.theme_cls.primary_color
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.add_user_screen_manager.current = 'ausm1'; app.root.ids.ScreenManagerNav.current = 'Home_second'
+
+                        Screen:
+                            name: 'ausm7'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.85,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    icon: 'emoticon-cry'
+                                MDLabel:
+                                    id: label_of_fail_screen_add
+                                    size_hint: (0.4,0.4)
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                    text: 'Sorry error occured'
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: get_color_from_hex('EE3233')
+                                    text_color: get_color_from_hex('EE3233')
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.add_user_screen_manager.current = 'ausm1'; app.root.ids.ScreenManagerNav.current = 'Home_second'
+
+                Screen:
+                    name: "delete_user"
+                    ScreenManager:
+                        id: delete_user_screen_manager
+                        Screen:
+                            name: 'dusm1'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Let\'s delete a user'
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.delete_user_screen_manager.current = 'dusm2'
+                        Screen:
+                            name: 'dusm2'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask your username?'
+
+                                MDTextField:
+                                    id: username_to_delete
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: 1,1,1,1
+                                    line_color_normal: 1,1,1,1
+                                    line_color_focus: 1,1,1,1
+                                    #on_text_validate: app.root.ids.username_to_delete.current_hint_text_color = 1,,0,1
+                                    size_hint_x: 0.5
+                                    mode: "rectangle"
+                                    hint_text: 'name'
+                                    required: True
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1 #self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.delete_user_screen_manager.current = 'dusm3'
+                        Screen:
+                            name: 'dusm3'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask your password?'
+                                MDTextField:
+                                    id: password_of_user_delete
+                                    hint_text: 'password'
+                                    size_hint_x: 0.5
+                                    password: True
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    mode: "rectangle"
+                                    required: True
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: self.theme_cls.primary_color
+                                    on_error: app.root.ids.password_of_user_delete.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: self.theme_cls.primary_color
+                                    line_color_focus: self.theme_cls.primary_color
+
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'arrow-right'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.result_of_delete_user()
+
+
+
+                        Screen:
+                            name: 'dusm5'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.87,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    icon: 'emoticon-excited-outline'
+                                MDLabel:
+                                    size_hint: (0.4,0.4)
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                    text: 'User deleted successfully'
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: self.theme_cls.primary_color
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.delete_user_screen_manager.current = 'dusm1';app.root.ids.ScreenManagerNav.current = 'Home_second'
+
+                        Screen:
+                            name: 'dusm6'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.85,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    icon: 'emoticon-cry'
+                                MDLabel:
+                                    id: label_of_fail_screen_delete
+                                    size_hint: (0.4,0.4)
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: get_color_from_hex('EE3233')
+                                    text_color: get_color_from_hex('EE3233')
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.delete_user_screen_manager.current = 'dusm1';app.root.ids.ScreenManagerNav.current = 'Home_second'
+
+                Screen:
+                    name: "activity_log"
+                    MDLabel:
+                        text: "activity log"
+                Screen:
+                    name: "password_management"
+                    ScreenManager:
+                        id: change_password_screen_manager
+                        Screen:
+                            name: 'cusm1'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Let\'s change password of user'
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.change_password_screen_manager.current = 'cusm2'
+                        Screen:
+                            name: 'cusm2'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Which user do you want to change password. please enter username?'
+
+                                MDTextField:
+                                    id: textfield_of_username_of_password_to_change
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: 1,1,1,1
+                                    on_error: app.root.ids.textfield_of_username_of_password_to_change.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: 1,1,1,1
+                                    line_color_focus: 1,1,1,1
+                                    size_hint_x: 0.5
+                                    mode: "rectangle"
+                                    hint_text: 'name'
+                                    required: True
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1 #self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.change_password_screen_manager.current = 'cusm3'
+
+                        Screen:
+                            name: 'cusm3'
+                            MDFloatLayout:
+                                md_bg_color: app.theme_cls.primary_color
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: 1,1,1,1
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: f"Please enter previous password?"
+
+                                MDTextField:
+                                    id: textfield_of_previous_password_to_change
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: 1,1,1,1
+                                    on_error: app.root.ids.textfield_of_previous_password_to_change.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: 1,1,1,1
+                                    line_color_focus: 1,1,1,1
+
+                                    size_hint_x: 0.5
+                                    mode: "rectangle"
+                                    hint_text: 'name'
+                                    required: True
+                                MDIconButton:
+                                    icon: 'arrow-right'
+                                    theme_text_color: "Custom"
+                                    text_color: 1,1,1,1 #self.theme_cls.primary_color
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.change_password_screen_manager.current = 'cusm4'
+                        Screen:
+                            name: 'cusm4'
+                            MDFloatLayout:
+                                MDLabel:
+                                    size_hint: (0.5,0.5)
+                                    color: self.theme_cls.primary_color
+                                    font_size: 30
+                                    pos_hint: {'center_x':0.5,'center_y':0.7}
+                                    text: 'Do you mind if I ask yout new password?'
+                                MDTextField:
+                                    id: textfield_of_new_password_to_change
+                                    hint_text: 'password'
+                                    size_hint_x: 0.5
+                                    password: True
+                                    pos_hint: {'center_x':0.5,'center_y':0.4}
+                                    mode: "rectangle"
+                                    required: True
+                                    color_mode: 'custom'
+                                    error_color: get_color_from_hex('EE3233')
+                                    current_hint_text_color: self.theme_cls.primary_color
+                                    on_error: app.root.ids.textfield_of_new_password_to_change.current_hint_text_color = 1,0,0,1
+                                    line_color_normal: self.theme_cls.primary_color
+                                    line_color_focus: self.theme_cls.primary_color
+
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'arrow-right'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.result_of_change_password()
+
+
+
+                        Screen:
+                            name: 'cusm5'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.87,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    icon: 'emoticon-excited-outline'
+                                MDLabel:
+
+                                    size_hint: (0.4,0.4)
+                                    background_color: self.theme_cls.primary_color
+                                    color: self.theme_cls.primary_color
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                    text: 'Password changed successfully'
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: self.theme_cls.primary_color
+                                    text_color: self.theme_cls.primary_color
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.change_password_screen_manager.current = 'cusm1';app.root.ids.ScreenManagerNav.current = 'Home_second'
+
+                        Screen:
+                            name: 'cusm6'
+                            FloatLayout:
+                                MDIcon:
+                                    pos_hint: {'center_x':.85,'center_y':0.7}
+                                    font_size : 100
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    icon: 'emoticon-cry'
+                                MDLabel:
+                                    id: label_of_fail_screen_change
+                                    size_hint: (0.4,0.4)
+                                    background_color: get_color_from_hex('EE3233')
+                                    color: get_color_from_hex('EE3233')
+                                    font_size: 29
+                                    pos_hint: {'center_x':0.5,'center_y':0.5}
+                                MDIconButton:
+                                    theme_text_color: "Custom"
+                                    background_color: get_color_from_hex('EE3233')
+                                    text_color: get_color_from_hex('EE3233')
+                                    icon: 'check'
+                                    pos_hint: {'center_x':0.9,'center_y':0.1}
+                                    on_release: app.root.ids.change_password_screen_manager.current = 'cusm1';app.root.ids.ScreenManagerNav.current = 'Home_second'
+                Screen:
+                    name: "about_us"
+                    MDLabel:
+                        text: "about us"
+
+
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                BoxLayout:
+                    id: content_drawer
+                    orientation: "vertical"
+                    padding: "8dp"
+                    spacing: "8dp"
+
+                    AnchorLayout:
+                        anchor_x: "left"
+                        size_hint_y: None
+                        height: avatar.height
+
+                        Image:
+                            id: avatar
+                            #size_hint: None,None
+                            #size: "56dp", "56dp"
+                            allow_stretch: True  # allow the video image to be scaled
+                            keep_ratio: True
+                            valign: 0.2                         #source: "Isfahan_University_of_Technology_(seal).svg.png"
+
+                    MDLabel:
+                        id: name_profile
+                        font_style: "Button"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                    MDLabel:
+                        id: email_profile
+                        font_style: "Caption"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                    ScrollView:
+
+                        DrawerList:
+                            id: md_list
+#        MDBoxLayout:
+#            MDNavigationRail:
+#                id: rail
+#                md_bg_color: get_color_from_hex("#0091EA")
+#                color_normal: get_color_from_hex("#ffffff")
+#                color_active: get_color_from_hex("#311B92")
+#                font_size: '15sp'
+#                use_resizeable: True
+#                #visible: "Selected"
+#
+#
+#                MDNavigationRailItem:
+#                    icon: 'plus-circle-multiple-outline'
+#                    text: 'Add a new person'
+#                    on_release: app.root.current = 'add_user'
+#
+#                MDNavigationRailItem:
+#                    icon: 'clipboard-text-search-outline'
+#                    text: 'delete user'
+#                    on_release: app.root.current = 'delete_user'
+#
+#                MDNavigationRailItem:
+#                    icon: 'lock-outline'
+#                    text: 'enterance_log'
+#                    on_release: app.root.current = 'enterance_log'
+#
+#                MDNavigationRailItem:
+#                    icon: 'exit-to-app'
+#                    text: 'Exit'
+#                    on_release: exit()
+#
+#
+#                MDNavigationRailItem:
+#                    icon: 'lock-outline'
+#                    text: 'Lock'
+#                    on_release: app.root.current = 'login_page'
+#    Screen:
+#            id: Home
+#            MDLabel:
+#                id: welcome_label
+#                text: 'Welcome!'
+#                font_size: 30
+#                halign: 'center'
+#                size_hint_y: None
+#                height: self.texture_size[1]
+#                padding_y: 15
+
+#        Image:
+#            source: 'Images/enterance.png'
+#            pos_hint: {'center_x': 0.28, 'center_y': 0.40}
+
+
+#            MDCard:
+#                #id: login
+#                #size_hint: None, None
+#                #size: 260,260*5/4
+#                #pos_hint: {'center_x': 0.6 , 'center_y': 0.65}
+#                elevation: 10
+#                padding: 25
+#                spacing: 25
+#                orientation: 'vertical'
+#                Image:
+#                # this is where the video will show
+#                # the id allows easy access
+#                    id: vid
+#                    size_hint: 1, 0.6
+#                    allow_stretch: True  # allow the video image to be scaled
+#                    keep_ratio: True  # keep the aspect ratio so people don't look squashed
+#                    pos_hint: {'center_x':0.5, 'top':0.8}
+
+            #
+            #           MDRoundFlatButton:
+            #              text: 'Face unlock'
+            #             icon: 'emoji_emotions'
+
